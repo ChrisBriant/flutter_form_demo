@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:formdemo/providers/form_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/form_screen.dart';
+import 'screens/form_screen.dart';
 
 void main() {
   runApp(FormDemo());

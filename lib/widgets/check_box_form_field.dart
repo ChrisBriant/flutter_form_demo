@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class CheckboxFormField extends FormField<bool> {
   //final Widget title;
   //final Function onSaved;
@@ -8,6 +9,8 @@ class CheckboxFormField extends FormField<bool> {
   CheckboxFormField(
       { required Widget title,
       required FormFieldSetter<bool> onSaved,
+      required Function changeFunction,
+      //required Function onChanged,
       //required FormFieldValidator<bool> validator,
       bool initialValue = false,
       bool autovalidate = false})
@@ -20,7 +23,11 @@ class CheckboxFormField extends FormField<bool> {
                 dense: state.hasError,
                 title: title,
                 value: state.value,
-                onChanged: state.didChange,
+                //onChanged: state.didChange,
+                onChanged:(val) { 
+                  state.didChange(val);
+                  changeFunction('cardio',val);
+                } ,
                 subtitle: state.hasError
                     ? Builder(
                         builder: (BuildContext context) =>  Text(

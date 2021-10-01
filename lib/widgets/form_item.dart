@@ -14,12 +14,14 @@ class FormItem extends StatelessWidget {
   final String appendText;
   final bool defaultCheckValue;
   final Function saveAction;
+  //final Function fieldChanged;
 
   const FormItem({
     required this.label,
     required this.type,
     required this.formItem,
     required this.saveAction,
+    //required this.fieldChanged,
     this.defaultChoiceValue = 0,
     this.choices = const {},
     this.appendText = '',
@@ -32,6 +34,7 @@ class FormItem extends StatelessWidget {
       case 'email' :
         return TextInputType.emailAddress;
       case 'numeric' :
+
         return TextInputType.number;
       default:
         return TextInputType.text;
@@ -65,6 +68,7 @@ class FormItem extends StatelessWidget {
             ).toList(), 
             value: _selectedValue,
             onChanged: (val) { _selectedValue = val as int; },
+            
             onSaved:(value) { saveAction(formItem,value); },
         );
       case 'check':
@@ -93,7 +97,12 @@ class FormItem extends StatelessWidget {
         // );
         return CheckboxFormField(
           title: Text(label), 
-          onSaved: (value) {saveAction(formItem,value);}, 
+          //onSaved: (value) {saveAction(formItem,value);},
+          onSaved: (_) {},
+          //onChanged: (value) {saveAction(formItem,value);}
+          changeFunction: saveAction,
+          //onChanged: saveAction,
+          //onChanged: (value) {notifyListen}
           //validator: (value) {retu}
         );
       default:

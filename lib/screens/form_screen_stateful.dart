@@ -2,13 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../widgets/check_box_form_field.dart';
 import '../providers/form_provider.dart';
 import '../widgets/form_item.dart';
 import '../helpers/db_helper.dart';
 
-class FormScreen extends StatelessWidget {
+class FormScreen extends StatefulWidget {
+  @override
+  _FormScreenState createState() => _FormScreenState();
+}
+
+class _FormScreenState extends State<FormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print('I changed dependancies');
+  }
+
   @override
   Widget build(BuildContext context) {
     final _form = Provider.of<FormProvider>(context, listen: true);
@@ -50,6 +63,9 @@ class FormScreen extends StatelessWidget {
     'Saturday' : 6,
   };
 
+
+
+
     return Scaffold(
       appBar: AppBar(title: Text('Form Example'),),
       body: SingleChildScrollView(
@@ -57,8 +73,9 @@ class FormScreen extends StatelessWidget {
           children: [
             Form(
               key: _formKey,
-              child: Column(
-                children: [
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
                     FormItem(label: 'Excersize', type: 'text',formItem: 'exersizeName',saveAction: _form.addToForm, ),
                     FormItem(label: 'Is exersize cardio', type: 'check', formItem: 'cardio', saveAction: _form.addToForm, defaultCheckValue:false,),
                     _form.getFormValue('cardio') as bool 
@@ -66,7 +83,8 @@ class FormScreen extends StatelessWidget {
                     _form.getFormValue('cardio') as bool
                     ? FormItem(label: 'Reps', type: 'numeric',formItem: 'reps',saveAction: _form.addToForm,) : SizedBox.shrink(),
                     FormItem(label: 'Day of Week:', type: 'choice', formItem: 'weekday', saveAction: _form.addToForm, choices: _days,defaultChoiceValue: 0,),
-                ],
+                  ],
+                ),
               ),
             ),
             ElevatedButton(
