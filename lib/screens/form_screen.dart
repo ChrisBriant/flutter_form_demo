@@ -7,6 +7,7 @@ import '../widgets/form_item.dart';
 import '../helpers/db_helper.dart';
 
 class FormScreen extends StatelessWidget {
+  static const routeName = '/form';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   
   @override
@@ -28,17 +29,33 @@ class FormScreen extends StatelessWidget {
       print(_form.getFormValue('weight'));
       print(_form.getFormValue('weekday'));
       print(_form.getFormValue('cardio'));
-      print(_form.getFormValue('reps'));
-      // DBHelper.insert('exerscises', {
-      //   'id' : uuid.v4(),
-      //   'exersizeName' : _form.getFormValue('exersizeName'),
-      //   'reps' : _form.getFormValue('reps') as int,
-      //   'weight' : _form.getFormValue('weight') as double,
-      //   'weekday' : _form.getFormValue('weekday') as int,
-      //   'iscardio' : _form.getFormValue('cardio') as bool ? 1 : 0
-      // });
+      print(int.parse(_form.getFormValue('reps')));
+      try {
+        DBHelper.insert('exerscises', {
+          'id' : uuid.v4(),
+          'exersizeName' : _form.getFormValue('exersizeName'),
+          'reps' : int.parse(_form.getFormValue('reps')),
+          'weight' : double.parse(_form.getFormValue('weight')),
+          'weekday' : _form.getFormValue('weekday'),
+          'iscardio' : _form.getFormValue('cardio') as bool ? 1 : 0
+        });
+      } catch(err) {
+        print(err);
+      }
     }
   }
+
+  _printDB() async {
+    List<Map<String, dynamic>> data = await DBHelper.getData('exerscises');
+    print(data);
+
+  }
+
+  _printDB();
+
+  //print(DBHelper.getData('exerscises'));
+
+
 
   final Map<String,int> _days = {
     'Sunday' : 0,
@@ -60,10 +77,10 @@ class FormScreen extends StatelessWidget {
               child: Column(
                 children: [
                     FormItem(label: 'Excersize', type: 'text',formItem: 'exersizeName',saveAction: _form.addToForm, ),
-                    FormItem(label: 'Is exersize cardio', type: 'check', formItem: 'cardio', saveAction: _form.addToForm, defaultCheckValue:false,),
-                    _form.getFormValue('cardio') as bool 
+                    FormItem(label: 'Is exersize cardio', type: 'check', formItem: 'cardio', saveAction: _form.addToForm, defaultCheckValue:_form.getFormValue('cardio'),),
+                    !_form.getFormValue('cardio')
                     ? FormItem(label: 'Weight', type: 'numeric',formItem: 'weight',saveAction: _form.addToForm,appendText: 'Kilos',) : SizedBox.shrink(),
-                    _form.getFormValue('cardio') as bool
+                    !_form.getFormValue('cardio')
                     ? FormItem(label: 'Reps', type: 'numeric',formItem: 'reps',saveAction: _form.addToForm,) : SizedBox.shrink(),
                     FormItem(label: 'Day of Week:', type: 'choice', formItem: 'weekday', saveAction: _form.addToForm, choices: _days,defaultChoiceValue: 0,),
                 ],

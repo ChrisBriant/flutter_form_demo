@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:formdemo/providers/form_provider.dart';
 import 'package:provider/provider.dart';
 
+
+import './providers/form_provider.dart';
+import './screens/exersizes_screen.dart';
 import 'screens/form_screen.dart';
 
 void main() {
@@ -28,8 +30,13 @@ class FormDemo extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: FormScreen(),
-      )
+        home: ExersizesScreen(),
+        routes: {
+          //'/' : (ctx) => ExersizesScreen(),
+          FormScreen.routeName : (ctx) => FormScreen(),
+        },
+      ),
+
     );
   }
 }
