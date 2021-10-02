@@ -19,7 +19,7 @@ class FormDemo extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => FormProvider({
           'exersizeName' : '',
           'reps' : 0,
-          'weight' : 1.5,
+          'weight' : 0.0,
           'metric' : 'kilos',
           'weekday' : 0,
           'cardio' : false

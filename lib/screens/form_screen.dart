@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:formdemo/screens/exersizes_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../providers/form_provider.dart';
 import '../widgets/form_item.dart';
-import '../helpers/db_helper.dart';
+import '../providers/db_provider.dart';
 
 class FormScreen extends StatelessWidget {
   static const routeName = '/form';
@@ -26,34 +27,50 @@ class FormScreen extends StatelessWidget {
       print('Form is valid');
       print(uuid.v4());
       print(_form.getFormValue('exersizeName'));
-      print(_form.getFormValue('weight'));
       print(_form.getFormValue('weekday'));
       print(_form.getFormValue('cardio'));
-      print(int.parse(_form.getFormValue('reps')));
+      double _weightVal = 0.0;
+      int _repsVal = 0;
+      if(!_form.getFormValue('cardio')) {
+        print('processing');
+        _repsVal = int.parse(_form.getFormValue('reps'));
+        _weightVal = double.parse(_form.getFormValue('weight'));
+      }
+
       try {
-        DBHelper.insert('exerscises', {
+        DBProvider.insert('exerscises', {
           'id' : uuid.v4(),
           'exersizeName' : _form.getFormValue('exersizeName'),
-          'reps' : int.parse(_form.getFormValue('reps')),
-          'weight' : double.parse(_form.getFormValue('weight')),
+          'reps' : _repsVal,
+          'weight' : _weightVal,
           'weekday' : _form.getFormValue('weekday'),
           'iscardio' : _form.getFormValue('cardio') as bool ? 1 : 0
         });
       } catch(err) {
         print(err);
       }
+      //Reset form and Exit
+      _form.resetFormData({
+          'exersizeName' : '',
+          'reps' : 0,
+          'weight' : 0.0,
+          'metric' : 'kilos',
+          'weekday' : 0,
+          'cardio' : false
+      });
+      Navigator.of(context).pop();
     }
   }
 
   _printDB() async {
-    List<Map<String, dynamic>> data = await DBHelper.getData('exerscises');
+    List<Map<String, dynamic>> data = await DBProvider.getData('exerscises');
     print(data);
 
   }
 
   _printDB();
 
-  //print(DBHelper.getData('exerscises'));
+  //print(DBProvider.getData('exerscises'));
 
 
 

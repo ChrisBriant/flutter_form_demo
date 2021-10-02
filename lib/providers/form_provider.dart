@@ -22,4 +22,15 @@ class FormProvider with ChangeNotifier{
     return true;
   }
 
+  //This will make each key null not really helpful
+  void clearFormData() {
+    _formData.keys.forEach((e) { 
+      _formData[e] = null;
+    }); 
+  }
+
+  void resetFormData(Map<String,dynamic> newForm) {
+    _formData = newForm;
+  }
+
 }

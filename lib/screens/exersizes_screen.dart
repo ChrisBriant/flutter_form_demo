@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../helpers/db_helper.dart';
+import 'package:formdemo/screens/form_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/db_provider.dart';
 
 class ExersizesScreen extends StatelessWidget {
   static const routeName = '/exersize';
@@ -7,8 +9,10 @@ class ExersizesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final _exersizeTabble = Provider.of<DBProvider>(context, listen: true).getExersizes();
+
     _printDB() async {
-      List<Map<String, dynamic>> data = await DBHelper.getData('exerscises');
+      List<Map<String, dynamic>> data = await DBProvider.getData('exerscises');
       print(data);
 
     }
@@ -38,32 +42,54 @@ class ExersizesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text('Exersizes'),),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Exersizes'),
-            FutureBuilder(
-              future: DBHelper.getData('exerscises'),
-              builder: (ctx, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) => snapshot.connectionState == ConnectionState.waiting
-                ? CircularProgressIndicator()
-                : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (ctx, i) => ListTile(
-                    title: Text(snapshot.data![i]['exersizeName']),
-                    subtitle: snapshot.data![i]['iscardio'] == 1 ? Text('Type: cardio') : Text('Type: weights'),
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: FittedBox(child: Text(_weekDays[snapshot.data![i]['weekday']]!)),
-
+      body: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Exersizes',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),  
+                  ),
+                  FutureBuilder(
+                    future: DBProvider.getData('exerscises'),
+                    //future: Provider.of<DBProvider>(context, listen: false).getExersizes(),
+                    builder: (ctx, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) => snapshot.connectionState == ConnectionState.waiting
+                      ? CircularProgressIndicator()
+                      : ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (ctx, i) => ListTile(
+                            title: Text(snapshot.data![i]['exersizeName']),
+                            subtitle: snapshot.data![i]['iscardio'] == 1 ? Text('Type: cardio') : Text('Type: weights'),
+                            leading: CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: FittedBox(child: Text(_weekDays[snapshot.data![i]['weekday']]!)),
+                                        
+                            ),
+                            onTap: () {print(snapshot.data![i]['exersizeName']);},
+                          )
+                        ),
                     ),
-                    onTap: () {print(snapshot.data![i]['exersizeName']);},
-                  )
-                )
-              )
-          ],),
+          
+                ],),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pushNamed(FormScreen.routeName), 
+            child: Text('Add Exersize')
+          )
+
+        ],
+
       ),
       
     );
